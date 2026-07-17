@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Selected graphic design work by Omed Abdala.">
+  <meta name="theme-color" content="#231f20">
+  <title>Works</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="work-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Omed Abdala home">
+      <span class="theme-logo theme-logo--header" aria-label="Omed Abdala graphic designer">
+        <img class="theme-logo__dark" src="assets/branding/logo-white.svg" alt="">
+        <img class="theme-logo__light" src="assets/branding/logo-black.svg" alt="">
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="index.html#home">HOME</a>
+      <a href="index.html#about">ABOUT</a>
+      <a href="work.html" aria-current="page">WORK</a>
+    </nav>
+
+    <button class="theme-switch" id="themeToggle" type="button" aria-label="Switch between dark and light themes">
+      <span class="theme-switch__label">DARK</span>
+      <span class="theme-switch__track"><i></i></span>
+      <span class="theme-switch__label">LIGHT</span>
+    </button>
+
+    <button class="menu-trigger" id="menuTrigger" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <aside class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu__header">
+      <span>NAVIGATION</span>
+      <span>OMED ABDALA / 2026</span>
+    </div>
+
+    <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+      <a href="index.html#home"><span>01</span>HOME</a>
+      <a href="index.html#about"><span>02</span>ABOUT</a>
+      <a href="work.html" aria-current="page"><span>03</span>WORK</a>
+    </nav>
+
+    <div class="mobile-menu__footer">
+      <button class="theme-switch theme-switch--mobile" id="mobileThemeToggle" type="button" aria-label="Switch between dark and light themes">
+        <span class="theme-switch__label">DARK</span>
+        <span class="theme-switch__track"><i></i></span>
+        <span class="theme-switch__label">LIGHT</span>
+      </button>
+      <a href="https://instagram.com/omedabdala" target="_blank" rel="noreferrer">INSTAGRAM ↗</a>
+    </div>
+  </aside>
+
+  <main>
+    <section class="archive-head section">
+      <div>
+        <p class="kicker reveal">SELECTED ARCHIVE / 2026</p>
+        <h1 class="reveal">Work without<br>the noise.</h1>
+      </div>
+
+      <div class="archive-head__meta reveal">
+        <p>
+          Logos, identities, posters and visual systems. Every project opens in an
+          interactive viewing room with zoom, drag and slide navigation.
+        </p>
+        <span id="projectCount">00 PROJECTS</span>
+      </div>
+    </section>
+
+    <section class="archive section">
+      <div class="archive-toolbar reveal">
+        <div class="filters" role="group" aria-label="Filter projects">
+          <button class="filter is-active" data-filter="all">ALL</button>
+          <button class="filter" data-filter="logos">LOGOS</button>
+          <button class="filter" data-filter="posters">POSTERS</button>
+          <button class="filter" data-filter="social">SOCIAL MEDIA</button>
+          <button class="filter" data-filter="books">BOOKS</button>
+          <button class="filter" data-filter="more">MORE</button>
+        </div>
+        <span class="archive-toolbar__note">CLICK A PROJECT TO OPEN</span>
+      </div>
+
+      <div class="work-grid" id="workGrid"></div>
+      <p class="empty-state" id="emptyState">No projects in this category yet.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-copy">
+      <span class="footer-copy__full">© 2026 OMED ABDALA</span>
+      <span class="footer-copy__compact">© 2026</span>
+    </span>
+
+    <span class="theme-logo theme-logo--footer" aria-hidden="true">
+      <img class="theme-logo__dark" src="assets/branding/logo-white.svg" alt="">
+      <img class="theme-logo__light" src="assets/branding/logo-black.svg" alt="">
+    </span>
+
+    <a class="footer-link" href="index.html">
+      <span class="footer-link__full">RETURN HOME ↗</span>
+      <span class="footer-link__compact">HOME ↗</span>
+    </a>
+  </footer>
+
+  <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Project viewer">
+    <div class="viewer__top">
+      <div>
+        <span class="viewer__number" id="viewerNumber">01</span>
+        <h2 id="viewerTitle">PROJECT</h2>
+      </div>
+      <div class="viewer__top-actions">
+        <button id="viewerTheme" type="button">INVERT</button>
+        <button id="viewerClose" type="button">CLOSE ×</button>
+      </div>
+    </div>
+
+    <div class="viewer__stage" id="viewerStage">
+      <div class="viewer__ambient" aria-hidden="true"></div>
+      <img id="viewerImage" draggable="false" alt="">
+      <div class="viewer__hint">DRAG / WHEEL TO ZOOM / DOUBLE-CLICK TO RESET</div>
+    </div>
+
+    <aside class="viewer__info">
+      <p id="viewerDescription"></p>
+      <div>
+        <span id="viewerCategory"></span>
+        <span id="viewerYear"></span>
+      </div>
+    </aside>
+
+    <div class="viewer__controls">
+      <button id="previousSlide" type="button" aria-label="Previous slide">←</button>
+      <div class="viewer__timeline" id="viewerTimeline"></div>
+      <span id="slideCounter">01 / 02</span>
+      <button id="nextSlide" type="button" aria-label="Next slide">→</button>
+    </div>
+
+    <div class="viewer__zoom">
+      <button id="zoomOut" type="button" aria-label="Zoom out">−</button>
+      <input id="zoomRange" type="range" min="50" max="400" value="100" step="5" aria-label="Zoom">
+      <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+      <button id="resetZoom" type="button">RESET</button>
+    </div>
+
+    <div class="viewer__thumbs" id="viewerThumbs"></div>
+  </div>
+
+  <script src="js/projects.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/work.js"></script>
+</body>
+</html>
