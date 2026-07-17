@@ -32,6 +32,12 @@
   let pointerStart = { x: 0, y: 0 };
   let dragStart = { x: 0, y: 0 };
   let dragging = false;
+
+  const activePointers = new Map();
+  let pinchStartDistance = 0;
+  let pinchStartScale = 1;
+  let pinchFocalPoint = { x: 0, y: 0 };
+
   let currentImages = [];
   let activeFilter = "all";
 
@@ -265,34 +271,143 @@
     applyTransform();
   }
 
+  function pointerDistance(first, second) {
+    return Math.hypot(second.x - first.x, second.y - first.y);
+  }
+
+  function pointerCenter(first, second) {
+    return {
+      x: (first.x + second.x) / 2,
+      y: (first.y + second.y) / 2,
+    };
+  }
+
+  function beginSinglePointerDrag(pointer) {
+    dragging = true;
+    stage?.classList.add("is-dragging");
+    pointerStart = { x: pointer.x, y: pointer.y };
+    dragStart = { ...position };
+  }
+
+  function beginPinchGesture() {
+    if (!stage || activePointers.size < 2) return;
+
+    const [first, second] = [...activePointers.values()];
+    const center = pointerCenter(first, second);
+    const rectangle = stage.getBoundingClientRect();
+    const stageCenter = {
+      x: rectangle.left + rectangle.width / 2,
+      y: rectangle.top + rectangle.height / 2,
+    };
+
+    pinchStartDistance = Math.max(pointerDistance(first, second), 1);
+    pinchStartScale = scale;
+
+    // Keep the point between both fingers fixed while scaling.
+    pinchFocalPoint = {
+      x: (center.x - stageCenter.x - position.x) / scale,
+      y: (center.y - stageCenter.y - position.y) / scale,
+    };
+
+    dragging = false;
+    stage.classList.remove("is-dragging");
+    stage.classList.add("is-pinching");
+  }
+
   stage?.addEventListener("wheel", (event) => {
     event.preventDefault();
     setScale(scale + (event.deltaY < 0 ? .12 : -.12));
   }, { passive: false });
 
   stage?.addEventListener("pointerdown", (event) => {
-    dragging = true;
-    stage.classList.add("is-dragging");
-    pointerStart = { x: event.clientX, y: event.clientY };
-    dragStart = { ...position };
+    activePointers.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY,
+      type: event.pointerType,
+    });
+
     stage.setPointerCapture(event.pointerId);
+
+    if (activePointers.size === 1) {
+      beginSinglePointerDrag(activePointers.get(event.pointerId));
+    } else if (activePointers.size === 2) {
+      beginPinchGesture();
+    }
   });
 
   stage?.addEventListener("pointermove", (event) => {
+    if (!activePointers.has(event.pointerId)) return;
+
+    activePointers.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY,
+      type: event.pointerType,
+    });
+
+    if (event.pointerType === "touch") {
+      event.preventDefault();
+    }
+
+    if (activePointers.size >= 2) {
+      const [first, second] = [...activePointers.values()];
+      const center = pointerCenter(first, second);
+      const distance = Math.max(pointerDistance(first, second), 1);
+      const rectangle = stage.getBoundingClientRect();
+      const stageCenter = {
+        x: rectangle.left + rectangle.width / 2,
+        y: rectangle.top + rectangle.height / 2,
+      };
+
+      const nextScale = Math.min(
+        4,
+        Math.max(.5, pinchStartScale * (distance / pinchStartDistance))
+      );
+
+      scale = nextScale;
+      position = {
+        x: center.x - stageCenter.x - pinchFocalPoint.x * scale,
+        y: center.y - stageCenter.y - pinchFocalPoint.y * scale,
+      };
+
+      zoomRange.value = String(Math.round(scale * 100));
+      applyTransform();
+      return;
+    }
+
     if (!dragging) return;
 
     position.x = dragStart.x + event.clientX - pointerStart.x;
     position.y = dragStart.y + event.clientY - pointerStart.y;
     applyTransform();
+  }, { passive: false });
+
+  function endPointer(event) {
+    activePointers.delete(event.pointerId);
+
+    if (stage?.hasPointerCapture(event.pointerId)) {
+      stage.releasePointerCapture(event.pointerId);
+    }
+
+    if (activePointers.size === 1) {
+      stage?.classList.remove("is-pinching");
+      const remainingPointer = [...activePointers.values()][0];
+      beginSinglePointerDrag(remainingPointer);
+      return;
+    }
+
+    if (activePointers.size === 0) {
+      dragging = false;
+      stage?.classList.remove("is-dragging", "is-pinching");
+    }
+  }
+
+  stage?.addEventListener("pointerup", endPointer);
+  stage?.addEventListener("pointercancel", endPointer);
+  stage?.addEventListener("pointerleave", (event) => {
+    if (event.pointerType !== "mouse") return;
+    endPointer(event);
   });
 
-  const stopDragging = () => {
-    dragging = false;
-    stage?.classList.remove("is-dragging");
-  };
-
-  stage?.addEventListener("pointerup", stopDragging);
-  stage?.addEventListener("pointercancel", stopDragging);
   stage?.addEventListener("dblclick", resetTransform);
 
   zoomRange?.addEventListener("input", () => setScale(Number(zoomRange.value) / 100));

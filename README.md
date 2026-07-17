@@ -128,3 +128,17 @@ always shows the correct version.
 - Tablets now use the navigation drawer, just like phones.
 - The drawer has professional typography, hover/focus feedback, and an active state.
 - Home and About active states update while scrolling.
+
+
+## Touch gestures
+
+The fullscreen project viewer now supports natural touch gestures:
+
+- one finger: move the artwork;
+- two fingers: pinch inward or outward to zoom;
+- the zoom follows the midpoint between both fingers;
+- lifting one finger continues naturally as a one-finger drag;
+- desktop wheel, drag, buttons and double-click reset still work.
+
+The separate zoom control is hidden on touch devices because pinch-to-zoom is now
+the primary interaction.
