@@ -20,7 +20,6 @@ function setMenu(open) {
 menuToggle?.addEventListener('click', () => setMenu(menuToggle.getAttribute('aria-expanded') !== 'true'));
 mobileMenu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
 
-
 function fastScrollTo(target, duration = 420) {
   if (!target) return;
   if (reducedMotion) {
@@ -33,9 +32,9 @@ function fastScrollTo(target, duration = 420) {
   const startedAt = performance.now();
   const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
   const frame = now => {
-    const progress = Math.min(1, (now - startedAt) / duration);
-    window.scrollTo(0, start + distance * easeOutCubic(progress));
-    if (progress < 1) requestAnimationFrame(frame);
+    const animationProgress = Math.min(1, (now - startedAt) / duration);
+    window.scrollTo(0, start + distance * easeOutCubic(animationProgress));
+    if (animationProgress < 1) requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
 }
@@ -52,6 +51,7 @@ document.addEventListener('click', event => {
   fastScrollTo(target, 420);
   history.replaceState(null, '', href);
 });
+
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     setMenu(false);
@@ -69,6 +69,107 @@ function onScroll() {
 }
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
+
+/* ==========================================================
+   CLIENT PROJECTS — ADD NEW CLIENTS HERE
+
+   1. Add the cover and gallery images to:
+      assets/images/projects/
+   2. Duplicate one project object below.
+   3. Give it a unique id and update its text/images.
+
+   All projects automatically appear on Works.
+   Up to six projects with showOnHome: true appear on Home.
+   ========================================================== */
+const HOME_PROJECT_LIMIT = 6;
+
+const projectList = [
+  {
+    id: 'danex',
+    showOnHome: true,
+    category: 'Pharmaceutical brand design',
+    cardCategory: 'Digital & print design',
+    filterCategory: 'identity',
+    title: 'Danex Pharma',
+    summary: 'Ongoing visual direction for Instagram, product campaigns, digital communication and production-ready print artwork.',
+    description: 'Danex Pharma presents VariVital wellness products, including adult multivitamins, Vitamin D3 and Collatin collagen + biotin support. For this project, I created a flexible visual direction and can manage the company’s design needs across both digital and print—from Instagram content and product campaigns to promotional materials and production-ready artwork.',
+    instagram: 'https://www.instagram.com/danexpharma/',
+    instagramLabel: 'View @danexpharma on Instagram',
+    cover: {
+      src: 'assets/images/projects/danex-cover.jpg',
+      alt: 'Danex Pharma logo presented on a blue illuminated background'
+    },
+    meta: [
+      ['Role', 'Visual direction & design'],
+      ['Scope', 'Instagram / digital / print'],
+      ['Tools', 'Illustrator / Photoshop / AI'],
+      ['Delivery', 'Screen to production']
+    ],
+    images: [
+      {
+        src: 'assets/images/projects/danex-cover.jpg',
+        alt: 'Danex Pharma logo presented on a blue illuminated background',
+        caption: 'Danex Pharma project cover and visual direction'
+      },
+      {
+        src: 'assets/images/projects/danex-products.jpg',
+        alt: 'VariVital Collatin, Multivit Adult and Vitamin D3 product bottles presented together',
+        caption: 'VariVital product campaign visual for digital and print use'
+      }
+    ]
+  }
+];
+
+const projectById = Object.fromEntries(projectList.map(project => [project.id, project]));
+
+function projectNumber(index) {
+  return String(index + 1).padStart(2, '0');
+}
+
+function renderHomeProject(project, index) {
+  return `
+    <button aria-label="Open ${project.title} case study" class="project-card reveal" data-project="${project.id}" data-reveal="up" data-tilt type="button">
+      <div class="project-card__visual project-card__visual--image">
+        <img src="${project.cover.src}" alt="${project.cover.alt}" width="2000" height="1400" loading="${index === 0 ? 'eager' : 'lazy'}">
+      </div>
+      <div class="project-card__meta"><span>${project.category}</span><span>${projectNumber(index)}</span></div>
+      <h3>${project.title}</h3>
+      <p>${project.summary}</p>
+    </button>`;
+}
+
+function renderWorkProject(project, index) {
+  return `
+    <article class="work-card reveal" data-category="${project.filterCategory}" data-project-card data-reveal="up" id="${project.id}">
+      <button aria-label="Open ${project.title} project" class="work-card__open" data-project="${project.id}" type="button">
+        <span class="work-card__art work-card__art--image">
+          <img src="${project.cover.src}" alt="${project.cover.alt}" width="2000" height="1400" loading="${index < 3 ? 'eager' : 'lazy'}">
+        </span>
+        <span class="work-card__info">
+          <span><small>${project.cardCategory}</small><b>${project.title}</b></span>
+          <i>View case study ↗</i>
+        </span>
+      </button>
+    </article>`;
+}
+
+function renderProjectGrids() {
+  const homeGrid = document.querySelector('[data-project-grid="home"]');
+  if (homeGrid) {
+    const selectedProjects = projectList.filter(project => project.showOnHome).slice(0, HOME_PROJECT_LIMIT);
+    homeGrid.innerHTML = selectedProjects.map(renderHomeProject).join('');
+  }
+
+  const worksGrid = document.querySelector('[data-project-grid="works"]');
+  if (worksGrid) worksGrid.innerHTML = projectList.map(renderWorkProject).join('');
+
+  const count = projectList.length;
+  document.querySelectorAll('[data-project-count]').forEach(node => {
+    node.textContent = `${String(count).padStart(2, '0')} client project${count === 1 ? '' : 's'}`;
+  });
+}
+
+renderProjectGrids();
 
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
@@ -156,92 +257,12 @@ filters.forEach(filter => filter.addEventListener('click', () => {
   });
 }));
 
-const projects = {
-  danex: {
-    category: 'Brand identity', title: 'DanexPharma', code: 'DX', tagline: 'Trust in motion',
-    description: 'A precise identity system built around trust, forward movement and clarity. The mark is engineered to stay recognizable across packaging, print, signage and digital applications.',
-    meta: [['Role','Identity direction'],['Focus','Logo / system'],['Output','Production ready']],
-    theme: { accent: '#af2024', base: '#efeeea', ink: '#111214', soft: '#d7d5cf' },
-    shots: ['Primary mark and wordmark', 'Color, type and identity rules', 'Business and packaging applications', 'Campaign detail and brand language']
-  },
-  kawa: {
-    category: 'Editorial design', title: 'Kawa Abban', code: 'KA', tagline: 'Rhythm in print',
-    description: 'A restrained book system that uses typography, rhythm, scale and material contrast to create a focused reading experience with a strong physical presence.',
-    meta: [['Role','Art direction'],['Focus','Book / layout'],['Output','Print ready']],
-    theme: { accent: '#d8d4ca', base: '#151517', ink: '#f7f5ef', soft: '#55545a' },
-    shots: ['Cover direction and title system', 'Typography and editorial grid', 'Cover, spine and page applications', 'Close-up layout and material detail']
-  },
-  wild: {
-    category: 'Campaign design', title: 'Wild Tiger', code: 'WT', tagline: 'Noise. Instinct. Energy.',
-    description: 'A high-energy visual language created for posters, banners and environmental applications. The system balances raw impact with a clear, repeatable structure.',
-    meta: [['Role','Visual direction'],['Focus','Poster campaign'],['Output','Large format']],
-    theme: { accent: '#f2e7d9', base: '#b71920', ink: '#ffffff', soft: '#7f1015' },
-    shots: ['Campaign title and key visual', 'Type, contrast and graphic system', 'Poster and banner applications', 'Large-format campaign detail']
-  },
-  kodama: {
-    category: 'Environmental design', title: 'Kodama Signage', code: 'KD', tagline: 'Space made legible',
-    description: 'A clean environmental identity designed to guide, identify and strengthen a physical space through disciplined typography, scale and production-aware detailing.',
-    meta: [['Role','Sign system'],['Focus','Environment'],['Output','Fabrication ready']],
-    theme: { accent: '#af2024', base: '#d8d6d0', ink: '#111214', soft: '#aaa8a2' },
-    shots: ['Signage identity and naming', 'Wayfinding type and icon system', 'Interior and exterior applications', 'Fabrication detail and scale']
-  },
-  northline: {
-    category: 'Brand identity', title: 'Northline', code: 'NL', tagline: 'Built to move north',
-    description: 'A contemporary identity concept with a strong typographic core, modular applications and a precise visual system built to scale across multiple brand touchpoints.',
-    meta: [['Role','Brand concept'],['Focus','Identity system'],['Output','Digital / print']],
-    theme: { accent: '#d3292f', base: '#090a0b', ink: '#ffffff', soft: '#323439' },
-    shots: ['Monogram and wordmark system', 'Core color and typography rules', 'Stationery and digital applications', 'Identity detail and modular rhythm']
-  },
-  afterdark: {
-    category: 'Poster series', title: 'After Dark', code: 'AD', tagline: 'Tension after silence',
-    description: 'An experimental poster series exploring contrast, tension and limited color. The compositions use typography as image and restraint as a source of intensity.',
-    meta: [['Role','Art direction'],['Focus','Poster series'],['Output','Print / social']],
-    theme: { accent: '#d3292f', base: '#111114', ink: '#ffffff', soft: '#35171a' },
-    shots: ['Series title and poster language', 'Type hierarchy and visual tension', 'Poster set and social crops', 'Close-up composition detail']
-  }
-};
-
-function projectVariables(project) {
-  const { accent, base, ink, soft } = project.theme;
-  return `--shot-accent:${accent};--shot-bg:${base};--shot-ink:${ink};--shot-soft:${soft}`;
-}
-
-function renderProjectGallery(project, id) {
-  const variables = projectVariables(project);
-  const labels = project.shots;
-  const visualTitle = project.title.replace(/([a-z])([A-Z])/g, '$1<wbr>$2');
-  return `
-    <figure class="case-shot case-shot--hero case-shot--${id}" style="${variables}">
-      <div class="case-shot__canvas case-visual case-visual--hero">
-        <span class="case-visual__number">01</span>
-        <strong>${project.code}</strong>
-        <div class="case-visual__title"><small>${project.category}</small><b>${visualTitle}</b><p>${project.tagline}</p></div>
-      </div>
-      <figcaption><span>01</span>${labels[0]}</figcaption>
-    </figure>
-    <figure class="case-shot case-shot--system case-shot--${id}" style="${variables}">
-      <div class="case-shot__canvas case-visual case-visual--system">
-        <div class="case-system__swatches"><i></i><i></i><i></i><i></i></div>
-        <div class="case-system__type"><span>Aa</span><div><b>${project.title}</b><small>ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789</small></div></div>
-        <p>${project.tagline}</p>
-      </div>
-      <figcaption><span>02</span>${labels[1]}</figcaption>
-    </figure>
-    <figure class="case-shot case-shot--applications case-shot--${id}" style="${variables}">
-      <div class="case-shot__canvas case-visual case-visual--applications">
-        <article><small>${project.code} / 01</small><b>${project.title}</b><i>${project.tagline}</i></article>
-        <article><span>${project.code}</span><small>${project.category}</small></article>
-        <article><b>${project.title}</b><p>${project.description.split('.')[0]}.</p></article>
-      </div>
-      <figcaption><span>03</span>${labels[2]}</figcaption>
-    </figure>
-    <figure class="case-shot case-shot--detail case-shot--${id}" style="${variables}">
-      <div class="case-shot__canvas case-visual case-visual--detail">
-        <span>${project.code}</span><strong>${project.title}</strong><span>${project.code}</span>
-        <div><small>Visual system / Selected detail</small><b>${project.tagline}</b><i>Omed Abdala — Graphic Design</i></div>
-      </div>
-      <figcaption><span>04</span>${labels[3]}</figcaption>
-    </figure>`;
+function renderProjectGallery(project) {
+  return project.images.map((image, index) => `
+    <figure class="case-shot case-shot--image">
+      <img class="case-shot__image" src="${image.src}" alt="${image.alt}" width="2000" height="1400" loading="${index === 0 ? 'eager' : 'lazy'}">
+      <figcaption><span>${projectNumber(index)}</span>${image.caption}</figcaption>
+    </figure>`).join('');
 }
 
 const dialog = document.querySelector('[data-dialog]');
@@ -252,14 +273,24 @@ function closeProject() {
 }
 
 function openProject(id) {
-  const project = projects[id];
+  const project = projectById[id];
   if (!dialog || !project) return;
   dialog.dataset.project = id;
   dialog.querySelector('[data-case-category]').textContent = project.category;
   dialog.querySelector('[data-case-title]').textContent = project.title;
   dialog.querySelector('[data-case-description]').textContent = project.description;
   dialog.querySelector('[data-case-meta]').innerHTML = project.meta.map(([term, value]) => `<div><dt>${term}</dt><dd>${value}</dd></div>`).join('');
-  dialog.querySelector('[data-case-gallery]').innerHTML = renderProjectGallery(project, id);
+  dialog.querySelector('[data-case-gallery]').innerHTML = renderProjectGallery(project);
+
+  const instagram = dialog.querySelector('[data-case-instagram]');
+  if (instagram) {
+    instagram.hidden = !project.instagram;
+    if (project.instagram) {
+      instagram.href = project.instagram;
+      instagram.innerHTML = `${project.instagramLabel || 'View project on Instagram'} <span>↗</span>`;
+    }
+  }
+
   dialog.showModal();
   body.classList.add('dialog-open');
   dialog.querySelector('.case-dialog__gallery').scrollTop = 0;
@@ -274,9 +305,8 @@ dialog?.addEventListener('click', event => {
 });
 
 const hashProject = location.hash.replace('#', '');
-const hashMap = { 'danex': 'danex', 'kawa': 'kawa', 'wild-tiger': 'wild' };
-if (body.dataset.page === 'works' && hashMap[hashProject]) {
-  window.addEventListener('load', () => openProject(hashMap[hashProject]), { once: true });
+if (body.dataset.page === 'works' && projectById[hashProject]) {
+  window.addEventListener('load', () => openProject(hashProject), { once: true });
 }
 
 document.querySelectorAll('[data-year]').forEach(node => node.textContent = new Date().getFullYear());

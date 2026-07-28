@@ -15,3 +15,16 @@ Upload the complete folder to Netlify, GitHub Pages or any static hosting provid
 
 ## Contact links
 The contact page currently uses `@omedabdala` for Instagram and `omedabdala` for Behance. Replace those two URLs in `contact.html` if your profile usernames are different.
+
+## Adding another client project
+
+The project cards are generated from one reusable list in `js/app.js`. Search for:
+
+`CLIENT PROJECTS — ADD NEW CLIENTS HERE`
+
+1. Put the new 2000×1400 cover and gallery images in `assets/images/projects/`.
+2. Duplicate the Danex project object in `projectList`.
+3. Change the unique `id`, title, descriptions, Instagram link, cover and gallery image paths.
+4. Keep `showOnHome: true` to include the client on Home. Home displays a maximum of six clients in a 3-column desktop grid; Works displays every project automatically.
+
+No Home or Works HTML card needs to be copied manually.
