@@ -11,7 +11,7 @@ A responsive three-page portfolio built with semantic HTML, modern CSS and vanil
 - `assets/cv/Omed-Abdala-CV.pdf` — downloadable CV
 
 ## Deploy
-Upload the complete folder to Netlify, GitHub Pages or any static hosting provider.
+For GitHub Pages, upload **all files and folders inside this `omedabdala` folder** to the repository root. Do not upload only the HTML files and do not upload the ZIP itself. The `assets/images/projects` folder and `js/app.js` must be committed too.
 
 ## Contact links
 The contact page currently uses `@omedabdala` for Instagram and `omedabdala` for Behance. Replace those two URLs in `contact.html` if your profile usernames are different.

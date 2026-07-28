@@ -96,7 +96,7 @@ const projectList = [
     instagram: 'https://www.instagram.com/danexpharma/',
     instagramLabel: 'View @danexpharma on Instagram',
     cover: {
-      src: 'assets/clients/danex-cover.jpg',
+      src: 'assets/images/projects/danex-cover.jpg',
       alt: 'Danex Pharma logo presented on a blue illuminated background'
     },
     meta: [
@@ -107,12 +107,12 @@ const projectList = [
     ],
     images: [
       {
-        src: 'assets/clients/danex-cover.jpg',
+        src: 'assets/images/projects/danex-cover.jpg',
         alt: 'Danex Pharma logo presented on a blue illuminated background',
         caption: 'Danex Pharma project cover and visual direction'
       },
       {
-        src: 'assets/clients/danex-products.jpg',
+        src: 'assets/images/projects/danex-products.jpg',
         alt: 'VariVital Collatin, Multivit Adult and Vitamin D3 product bottles presented together',
         caption: 'VariVital product campaign visual for digital and print use'
       }

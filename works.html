@@ -6,7 +6,7 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="Selected real client projects by Omed Abdala across brand identity, digital campaigns, social media and production-ready print design." name="description"/>
 <meta content="#af2024" name="theme-color"/>
-<title>Works — Omed Abdala</title>
+<title>Works</title>
 <link href="assets/images/site-icon.svg" rel="icon" type="image/svg+xml"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -46,7 +46,20 @@
 <p class="work-index__count" data-project-count>Client projects</p>
 </div>
 <!-- Every client project from js/app.js is generated here automatically. -->
-<div class="work-grid" data-project-grid="works"></div>
+<div class="work-grid" data-project-grid="works">
+<!-- Static fallback: JavaScript replaces this with the interactive card after loading. -->
+<article class="work-card reveal is-visible" data-category="identity" data-project-card id="danex">
+<a aria-label="View Danex Pharma on Instagram" class="work-card__open" href="https://www.instagram.com/danexpharma/" target="_blank" rel="noopener">
+<span class="work-card__art work-card__art--image">
+<img src="assets/images/projects/danex-cover.jpg" alt="Danex Pharma logo presented on a blue illuminated background" width="2000" height="1400" loading="eager">
+</span>
+<span class="work-card__info">
+<span><small>Digital &amp; print design</small><b>Danex Pharma</b></span>
+<i>View project ↗</i>
+</span>
+</a>
+</article>
+</div>
 </div>
 </section>
 </main>
@@ -79,6 +92,6 @@
 </aside>
 <div aria-label="Project visuals" class="case-dialog__gallery" data-case-gallery=""></div>
 </div>
-</dialog><script defer="" src="js/app.js"></script>
+</dialog><script defer="" src="js/app.js?v=20260729-1"></script>
 </body>
 </html>

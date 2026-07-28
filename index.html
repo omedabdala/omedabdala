@@ -107,7 +107,17 @@
 <a class="text-action" href="works.html">View all work <span>↗</span></a>
 </div>
 <!-- The first six selected clients are generated from js/app.js. -->
-<div class="project-strip shell" data-project-grid="home"></div>
+<div class="project-strip shell" data-project-grid="home">
+<!-- Static fallback: remains visible if JavaScript is delayed or blocked on GitHub Pages. -->
+<a aria-label="View Danex Pharma case study" class="project-card reveal is-visible" href="works.html#danex">
+<div class="project-card__visual project-card__visual--image">
+<img src="assets/images/projects/danex-cover.jpg" alt="Danex Pharma logo presented on a blue illuminated background" width="2000" height="1400" loading="eager">
+</div>
+<div class="project-card__meta"><span>Pharmaceutical brand design</span><span>01</span></div>
+<h3>Danex Pharma</h3>
+<p>Ongoing visual direction for Instagram, product campaigns, digital communication and production-ready print artwork.</p>
+</a>
+</div>
 <div class="selected__action shell reveal" data-reveal="up">
 <a class="button button--dark" data-magnetic="" href="works.html">View all client work <span>↗</span></a>
 </div>
@@ -159,6 +169,6 @@
 </aside>
 <div aria-label="Project visuals" class="case-dialog__gallery" data-case-gallery=""></div>
 </div>
-</dialog><script defer="" src="js/app.js"></script>
+</dialog><script defer="" src="js/app.js?v=20260729-1"></script>
 </body>
 </html>
